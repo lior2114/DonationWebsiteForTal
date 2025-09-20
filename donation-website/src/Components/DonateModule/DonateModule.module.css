@@ -1,0 +1,238 @@
+/* Donate Module Styles */
+.donateModule {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, rgba(18, 194, 205, 0.02) 100%);
+  border: 2px solid var(--border-color);
+  background-clip: padding-box;
+  border-radius: 20px;
+  padding: 24px;
+  margin: 32px 0;
+  direction: rtl;
+  box-shadow: 0 8px 32px rgba(18, 194, 205, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.donateModule::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    transparent, 
+    rgba(18, 194, 205, 0.1), 
+    transparent);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.donateModule:hover::before {
+  opacity: 1;
+}
+
+.moduleTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.donateDescription {
+  font-size: 16px;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.quickAmounts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.amountButton {
+  background-color: #FFFFFF;
+  border: 2px solid #EDEDED;
+  color: #111;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: regular;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.amountButton:hover {
+  border-color: #12c2cd;
+  background-color: rgba(18, 194, 205, 0.05);
+}
+
+.amountButton:focus {
+  outline: 2px solid #12c2cd;
+  outline-offset: 2px;
+}
+
+.amountButtonActive {
+  background: linear-gradient(45deg, #12c2cd, #00f2fe);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 15px rgba(18, 194, 205, 0.3);
+  transform: scale(1.05);
+}
+
+.customAmountContainer {
+  margin-bottom: 20px;
+}
+
+.customAmountInput {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #EDEDED;
+  border-radius: 8px;
+  font-size: 16px;
+  direction: rtl;
+  text-align: right;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.customAmountInput:focus {
+  outline: none;
+  border-color: #12c2cd;
+}
+
+.donateButton {
+  width: 100%;
+  background: linear-gradient(45deg, #12c2cd, #00f2fe);
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  box-shadow: 0 6px 20px rgba(18, 194, 205, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.donateButton::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.donateButton:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+.donateButton:hover:not(:disabled) {
+  background: linear-gradient(45deg, #00f2fe, #12c2cd, #9d4edd);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(18, 194, 205, 0.5), 
+              0 0 20px rgba(0, 242, 254, 0.3);
+}
+
+.donateButton:focus {
+  outline: 2px solid #12c2cd;
+  outline-offset: 2px;
+}
+
+.donateButtonDisabled {
+  background-color: #EDEDED;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* Mobile sticky button */
+.stickyButtonContainer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-top: 1px solid #EDEDED;
+  padding: 16px;
+  z-index: 1000;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stickyDonateButton {
+  width: 100%;
+  background-color: #12c2cd;
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.stickyDonateButton:hover {
+  background-color: #0ea9b3;
+}
+
+.stickyDonateButton:focus {
+  outline: 2px solid #12c2cd;
+  outline-offset: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .donateModule {
+    padding: 20px;
+    margin: 24px 0 80px 0; /* Extra bottom margin for sticky button */
+  }
+  
+  .quickAmounts {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .amountButton {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .moduleTitle {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .donateModule {
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .quickAmounts {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  
+  .amountButton {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}

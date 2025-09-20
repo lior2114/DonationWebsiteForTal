@@ -1,0 +1,94 @@
+/* Page Shell Styles */
+.pageShell {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  position: relative;
+  direction: rtl;
+  transition: background-color 0.3s ease;
+}
+
+.sideBars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.leftBar,
+.rightBar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    rgba(18, 194, 205, 0.1), 
+    rgba(0, 242, 254, 0.1),
+    rgba(157, 78, 221, 0.1),
+    rgba(255, 0, 110, 0.1));
+  background-size: 300% 300%;
+  animation: gradientShift 8s ease infinite;
+  opacity: 0.6;
+}
+
+.rightBar {
+  right: 0;
+  width: 6%;
+}
+
+.leftBar {
+  left: 0;
+  width: 4%;
+}
+
+.mainContainer {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+}
+
+.contentWrapper {
+  width: 100%;
+  max-width: 880px;
+  padding: 24px 0;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+  .rightBar {
+    width: 2%;
+  }
+  
+  .leftBar {
+    width: 0%;
+  }
+  
+  .mainContainer {
+    padding: 0 8px;
+  }
+  
+  .contentWrapper {
+    padding: 16px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .rightBar,
+  .leftBar {
+    display: none;
+  }
+  
+  .mainContainer {
+    padding: 0 4px;
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

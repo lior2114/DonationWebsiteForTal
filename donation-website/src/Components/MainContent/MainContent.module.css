@@ -1,0 +1,29 @@
+/* Main Content Styles */
+.mainContent {
+  display: flex;
+  gap: 32px;
+  margin-top: 32px;
+  align-items: flex-start;
+}
+
+/* Responsive behavior */
+@media (max-width: 1024px) {
+  .mainContent {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContent {
+    gap: 16px;
+    margin-top: 20px;
+  }
+}

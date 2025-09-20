@@ -1,0 +1,89 @@
+/* Theme Toggle Button Styles */
+.themeToggle {
+  position: relative;
+  z-index: 10;
+  
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  
+  /* Light mode styles */
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  color: #f39c12;
+  border: 2px solid #e9ecef;
+}
+
+.themeToggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.themeToggle:active {
+  transform: translateY(0);
+}
+
+/* Dark mode styles */
+.themeToggle.dark {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: #f1c40f;
+  border: 2px solid #4a5568;
+}
+
+.themeToggle.dark:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.toggleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.themeToggle:hover .toggleIcon {
+  transform: rotate(180deg);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .themeToggle {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .toggleIcon svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Focus styles for accessibility */
+.themeToggle:focus {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Animation for theme transition */
+.themeToggle {
+  animation: themeToggleAppear 0.5s ease-out;
+}
+
+@keyframes themeToggleAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

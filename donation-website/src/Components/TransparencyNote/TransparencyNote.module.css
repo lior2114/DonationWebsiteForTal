@@ -1,0 +1,85 @@
+/* Transparency Note Styles */
+.transparencyNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 24px 0;
+  padding: 12px;
+  background: linear-gradient(135deg, 
+    rgba(18, 194, 205, 0.05), 
+    rgba(0, 242, 254, 0.03),
+    rgba(57, 255, 20, 0.02));
+  border-radius: 15px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  direction: rtl;
+  box-shadow: 0 4px 15px rgba(18, 194, 205, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.transparencyNote::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, 
+    rgba(18, 194, 205, 0.2),
+    rgba(0, 242, 254, 0.2), 
+    rgba(57, 255, 20, 0.2));
+  border-radius: 17px;
+  z-index: -1;
+  background-size: 300% 300%;
+  animation: gradientShift 6s ease infinite;
+  opacity: 0.3;
+}
+
+.iconContainer {
+  flex-shrink: 0;
+}
+
+.icon {
+  font-size: 16px;
+  display: block;
+}
+
+.noteText {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+  text-align: center;
+  font-family: inherit;
+  transition: color 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .transparencyNote {
+    padding: 10px;
+    margin: 20px 0;
+  }
+  
+  .noteText {
+    font-size: 13px;
+  }
+  
+  .icon {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transparencyNote {
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 8px;
+  }
+  
+  .noteText {
+    font-size: 12px;
+  }
+}

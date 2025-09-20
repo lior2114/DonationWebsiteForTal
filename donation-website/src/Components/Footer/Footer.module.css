@@ -1,0 +1,45 @@
+/* Footer Styles */
+.footer {
+  border-top: 1px solid var(--border-color);
+  margin-top: 48px;
+  padding: 24px 0;
+  text-align: center;
+  transition: border-color 0.3s ease;
+}
+
+.footerContent {
+  max-width: 100%;
+}
+
+.footerText {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.4;
+  direction: rtl;
+  font-family: inherit;
+  transition: color 0.3s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer {
+    margin-top: 32px;
+    padding: 20px 0;
+  }
+  
+  .footerText {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    margin-top: 24px;
+    padding: 16px 0;
+  }
+  
+  .footerText {
+    font-size: 12px;
+  }
+}
