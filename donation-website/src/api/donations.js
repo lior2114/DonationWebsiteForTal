@@ -2,7 +2,7 @@
 import apiService from './api';
 
 // Polling interval for real-time updates (in milliseconds)
-const POLLING_INTERVAL = 5000; // 5 seconds
+const POLLING_INTERVAL = 30000; // 30 seconds - reduced from 5 seconds to minimize server load
 
 // Add a new donation
 export const addDonation = async (donationData) => {
@@ -15,16 +15,28 @@ export const addDonation = async (donationData) => {
   }
 };
 
-// Get top donors (with polling for real-time updates)
+// Get top donors (with smart polling for real-time updates)
 export const subscribeToTopDonors = (callback, limitCount = 10) => {
   let intervalId;
   let retryCount = 0;
   const MAX_RETRIES = 3;
+  let isTabVisible = true;
+  let lastData = null;
   
   const fetchTopDonors = async () => {
+    // Don't fetch if tab is not visible (user switched tabs)
+    if (!isTabVisible) return;
+    
     try {
       const response = await apiService.getTopDonors(limitCount);
-      callback(response.donations || []);
+      const newData = response.donations || [];
+      
+      // Only call callback if data actually changed
+      if (JSON.stringify(newData) !== JSON.stringify(lastData)) {
+        callback(newData);
+        lastData = newData;
+      }
+      
       retryCount = 0; // Reset retry count on success
     } catch (error) {
       console.error('Error fetching top donors:', error);
@@ -41,6 +53,17 @@ export const subscribeToTopDonors = (callback, limitCount = 10) => {
     }
   };
 
+  // Listen for tab visibility changes
+  const handleVisibilityChange = () => {
+    isTabVisible = !document.hidden;
+    if (isTabVisible) {
+      // Fetch immediately when tab becomes visible again
+      fetchTopDonors();
+    }
+  };
+
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+
   // Initial fetch
   fetchTopDonors();
   
@@ -54,16 +77,22 @@ export const subscribeToTopDonors = (callback, limitCount = 10) => {
     if (intervalId) {
       clearInterval(intervalId);
     }
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
   };
 };
 
-// Get campaign progress (with polling for real-time updates)
+// Get campaign progress (with smart polling for real-time updates)
 export const subscribeToCampaignProgress = (callback) => {
   let intervalId;
   let retryCount = 0;
   const MAX_RETRIES = 3;
+  let isTabVisible = true;
+  let lastData = null;
   
   const fetchCampaignProgress = async () => {
+    // Don't fetch if tab is not visible (user switched tabs)
+    if (!isTabVisible) return;
+    
     try {
       const response = await apiService.getCampaignProgress();
       // Ensure we have all required fields
@@ -73,7 +102,13 @@ export const subscribeToCampaignProgress = (callback) => {
         goal: response.goal || 10000,
         progress: response.progress || 0
       };
-      callback(progressData);
+      
+      // Only call callback if data actually changed
+      if (JSON.stringify(progressData) !== JSON.stringify(lastData)) {
+        callback(progressData);
+        lastData = progressData;
+      }
+      
       retryCount = 0; // Reset retry count on success
     } catch (error) {
       console.error('Error fetching campaign progress:', error);
@@ -99,6 +134,17 @@ export const subscribeToCampaignProgress = (callback) => {
     }
   };
 
+  // Listen for tab visibility changes
+  const handleVisibilityChange = () => {
+    isTabVisible = !document.hidden;
+    if (isTabVisible) {
+      // Fetch immediately when tab becomes visible again
+      fetchCampaignProgress();
+    }
+  };
+
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+
   // Initial fetch
   fetchCampaignProgress();
   
@@ -112,6 +158,7 @@ export const subscribeToCampaignProgress = (callback) => {
     if (intervalId) {
       clearInterval(intervalId);
     }
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
   };
 };
 
