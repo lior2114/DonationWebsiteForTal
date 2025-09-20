@@ -12,6 +12,7 @@ import Footer from '../Components/Footer/Footer';
 import ErrorMessage from '../Components/ErrorMessage/ErrorMessage';
 import TopDonors from '../Components/TopDonors/TopDonors';
 import MainContent from '../Components/MainContent/MainContent';
+import styles from './HomePage.module.css';
 
 const HomePage = () => {
   const { campaignProgress, campaignSettings, setError, error, clearError } = useDonation();
@@ -57,7 +58,9 @@ const HomePage = () => {
       <MainContent>
         {/* Left Column - Campaign Text */}
         <div style={{ flex: '2' }}>
-          <CampaignText content={campaignTextFromClient} />
+          <div className={styles.campaignTextContainer}>
+            <CampaignText content={campaignTextFromClient} />
+          </div>
         </div>
         
         {/* Right Column - Top Donors */}
