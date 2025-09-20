@@ -325,6 +325,10 @@
     width: 100%;
     max-width: 100%;
     border-radius: 15px;
+    /* Allow horizontal scrolling if content overflows */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
   
   .donorItem {
