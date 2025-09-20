@@ -319,19 +319,58 @@
 @media (max-width: 320px) {
   .heroTitle {
     font-size: 1.8rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
   }
   
   .heroSubtitle {
     font-size: 0.9rem;
+    line-height: 1.4;
   }
   
   .campaignTextContainer {
     padding: 0.8rem;
     border-radius: 12px;
     margin: 0.2rem 0;
-    margin-left: -2rem; /* גלישה מותאמת לאייפון קטן */
+    margin-left: -1.5rem; /* גלישה מותאמת לאייפון קטן */
     margin-right: -0.3rem;
-    width: calc(100% + 2.3rem);
+    width: calc(100% + 1.8rem);
+    /* Ensure text is readable */
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  
+  .homePage {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Landscape mode for phones */
+@media (max-width: 896px) and (orientation: landscape) and (max-height: 500px) {
+  .campaignTextContainer {
+    margin-left: -6rem;
+    width: calc(100% + 7rem);
+    padding: 1rem;
+  }
+  
+  .heroTitle {
+    font-size: 1.8rem;
+  }
+  
+  .heroSubtitle {
+    font-size: 0.9rem;
+  }
+  
+  .homePage {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Ultra-wide phones */
+@media (min-width: 414px) and (max-width: 480px) {
+  .campaignTextContainer {
+    margin-left: -5rem;
+    width: calc(100% + 5.5rem);
   }
 }
 
