@@ -9,6 +9,7 @@
   top:50%;
   left: 1%;
   width: 350px;
+  margin-right: 15rem; /* מרווח הרבה הרבה יותר גדול מהריבוע המתפרס */
   max-height: calc(100vh - 4rem);
   border: 2px solid var(--border-color);
   background-clip: padding-box;
