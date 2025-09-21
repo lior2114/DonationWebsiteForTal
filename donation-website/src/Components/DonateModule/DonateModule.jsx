@@ -12,8 +12,13 @@ const DonateModule = ({ onDonate }) => {
     <div className={styles.donateModule}>
       <h3 className={styles.moduleTitle}>תרומה לקמפיין</h3>
       
-      <p className={styles.donateDescription}>
+      <p className={styles.firstp}>
         לחץ על הכפתור למטה כדי לתרום דרך מערכת התשלומים המאובטחת של Meshulam
+        </p>
+        <p className={styles.donateDescription}>
+        כשתועברו לעמוד התשלום, יופיע שדה בשם: שם מלא (חובה), זהו השם שיופיע באתר ובסרטון
+      אם אתם מעדיפים להישאר אנונימיים, תוכלו לרשום אנונימי/ת או רק שם פרטי אם תרצו, תודה.🙏
+
       </p>
 
       <button
