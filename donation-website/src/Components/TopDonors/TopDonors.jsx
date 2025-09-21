@@ -19,7 +19,15 @@ const TopDonors = () => {
   const formatDate = (timestamp) => {
     if (!timestamp) return '';
     
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    let date;
+    if (timestamp.toDate) {
+      date = timestamp.toDate();
+    } else if (typeof timestamp === 'string') {
+      date = new Date(timestamp);
+    } else {
+      date = new Date(timestamp);
+    }
+    
     return new Intl.DateTimeFormat('he-IL', {
       day: '2-digit',
       month: '2-digit',
@@ -68,7 +76,7 @@ const TopDonors = () => {
                   {donor.anonymous ? 'תורם אנונימי' : (donor.name || 'תורם')}
                 </div>
                 <div className={styles.donorDate}>
-                  {formatDate(donor.timestamp)}
+                  {formatDate(donor.created_at)}
                 </div>
                 {donor.message && (
                   <div className={styles.donorMessage}>

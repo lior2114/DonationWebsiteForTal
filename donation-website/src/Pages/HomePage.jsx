@@ -26,7 +26,7 @@ const HomePage = () => {
 
 החלטתי להקדיש את פרויקט 100 הימים שלי ולעזור להם - יחד אתכם!
 
-העמותה עושה הרבה דברים: מחלקת סלי מזון למשפחות, מסייעת בהפקת בר\ת מצווה לילדים שבאים ממשפחות עם קושי כלכלי ותומכת במשפחות בזמנים קשים.
+העמותה עושה הרבה דברים: מחלקת סלי מזון למשפחות, מסייעת בהפקת בר/בת מצווה לילדים שבאים ממשפחות עם קושי כלכלי ותומכת במשפחות בזמנים קשים
 
 התרומות שנאסוף יהיו מיועדות ישירות לקטגוריה של סלי מזון למשפחות נזקקות.
 
@@ -61,7 +61,7 @@ const HomePage = () => {
       {error && <ErrorMessage message={error} onClose={clearError} />}
       <Progress 
         targetAmount={campaignProgress.goal || campaignSettings.goal || 10000} 
-        raisedAmount={campaignProgress.totalAmount || 0} 
+        raisedAmount={campaignProgress.current || campaignProgress.totalAmount || 0} 
       />
       {/* Campaign Text with Top Donors on the side */}
       <MainContent>

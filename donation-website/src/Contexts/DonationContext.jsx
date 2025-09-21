@@ -111,7 +111,9 @@ export const DonationProvider = ({ children }) => {
       dispatch({ type: ActionTypes.SET_TOP_DONORS, payload: donors });
     });
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   // Subscribe to campaign progress
@@ -120,7 +122,9 @@ export const DonationProvider = ({ children }) => {
       dispatch({ type: ActionTypes.SET_CAMPAIGN_PROGRESS, payload: progress });
     });
 
-    return () => unsubscribe();
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   // Context value

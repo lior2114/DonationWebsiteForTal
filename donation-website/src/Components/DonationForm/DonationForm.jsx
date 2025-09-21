@@ -1,7 +1,7 @@
 // Donation Form Component
 import React, { useState } from 'react';
 import { useDonation } from '../../Contexts/DonationContext';
-import { createPaymentIntent, validateDonationAmount } from '../../api/creditCard';
+// import { createPaymentIntent, validateDonationAmount } from '../../api/creditCard'; // Removed - using Firebase now
 import { Heart, CreditCard, User, Mail, MessageSquare, Eye, EyeOff } from 'lucide-react';
 import styles from './DonationForm.module.css';
 
@@ -41,9 +41,14 @@ const DonationForm = () => {
       return false;
     }
     
-    const amountValidation = validateDonationAmount(formData.amount, campaignSettings.minDonation || 10);
-    if (!amountValidation.valid) {
-      setError(amountValidation.error);
+    // Simple amount validation (replaced validateDonationAmount)
+    const minAmount = campaignSettings.minDonation || 10;
+    const amountValidation = {
+      isValid: formData.amount >= minAmount,
+      message: formData.amount < minAmount ? `הסכום המינימלי הוא ${minAmount} ₪` : ''
+    };
+    if (!amountValidation.isValid) {
+      setError(amountValidation.message);
       return false;
     }
     

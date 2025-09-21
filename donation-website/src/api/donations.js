@@ -1,203 +1,197 @@
-// Donations API service - Updated to use SQL backend
-import apiService from './api';
-
-// Polling interval for real-time updates (in milliseconds)
-const POLLING_INTERVAL = 30000; // 30 seconds - reduced from 5 seconds to minimize server load
+// Firebase Donations API service
+import DonationService from '../firebase/donationService';
+// import '../firebase/initData'; // DISABLED - Don't auto-add sample data
 
 // Add a new donation
 export const addDonation = async (donationData) => {
   try {
-    const result = await apiService.addDonation(donationData);
+    const result = await DonationService.addDonation(donationData);
     return result.id;
   } catch (error) {
-    console.error('Error adding donation:', error);
+    console.error('❌ Error adding donation:', error);
     throw error;
   }
 };
 
-// Get top donors (with smart polling for real-time updates)
+// Add amount only (hidden from donors list)
+export const addAmountOnly = async (amount, description = "עדכון ידני") => {
+  try {
+    const result = await DonationService.addAmountOnly(amount, description);
+    return result;
+  } catch (error) {
+    console.error('❌ Error adding amount:', error);
+    throw error;
+  }
+};
+
+// Get top donors with real-time Firebase listeners
 export const subscribeToTopDonors = (callback, limitCount = 10) => {
-  let intervalId;
-  let retryCount = 0;
-  const MAX_RETRIES = 3;
-  let isTabVisible = true;
-  let lastData = null;
+  let unsubscribe = null;
   
-  const fetchTopDonors = async () => {
-    // Don't fetch if tab is not visible (user switched tabs)
-    if (!isTabVisible) return;
-    
+  const startListening = () => {
     try {
-      const response = await apiService.getTopDonors(limitCount);
-      const newData = response.donations || [];
+      // Use Firebase real-time listener
+      unsubscribe = DonationService.onDonationsChange((donations) => {
+        // Get top donors by amount (already filtered in DonationService)
+        const topDonors = donations
+          .filter(donation => donation.status === 'completed' && donation.amount > 0)
+          .sort((a, b) => b.amount - a.amount)
+          .slice(0, limitCount)
+          .map(donation => ({
+            id: donation.id,
+            name: donation.name || 'אנונימי',
+            amount: donation.amount,
+            message: donation.message || null,
+            created_at: donation.created_at
+          }));
+        
+        callback(topDonors);
+      });
       
-      // Only call callback if data actually changed
-      if (JSON.stringify(newData) !== JSON.stringify(lastData)) {
-        callback(newData);
-        lastData = newData;
-      }
-      
-      retryCount = 0; // Reset retry count on success
     } catch (error) {
-      console.error('Error fetching top donors:', error);
-      retryCount++;
+      console.error('❌ Error starting top donors listener:', error);
+      // Fallback to one-time fetch
+      fallbackFetch();
+    }
+  };
+  
+  const fallbackFetch = async () => {
+    try {
+      const donations = await DonationService.getTopDonations(limitCount);
+      const topDonors = donations.map(donation => ({
+        id: donation.id,
+        name: donation.name || 'אנונימי',
+        amount: donation.amount,
+        message: donation.message || null,
+        created_at: donation.created_at
+      }));
       
-      if (retryCount >= MAX_RETRIES) {
-        console.warn('Max retries reached for top donors. Stopping polling.');
-        callback([]);
-        return;
-      }
-      
-      // Return empty array on error
+      callback(topDonors);
+    } catch (error) {
+      console.error('❌ Fallback fetch failed:', error);
       callback([]);
     }
   };
-
-  // Listen for tab visibility changes
-  const handleVisibilityChange = () => {
-    isTabVisible = !document.hidden;
-    if (isTabVisible) {
-      // Fetch immediately when tab becomes visible again
-      fetchTopDonors();
-    }
-  };
-
-  document.addEventListener('visibilitychange', handleVisibilityChange);
-
-  // Initial fetch
-  fetchTopDonors();
   
-  // Set up polling only if we haven't exceeded max retries
-  if (retryCount < MAX_RETRIES) {
-    intervalId = setInterval(fetchTopDonors, POLLING_INTERVAL);
-  }
+  // Start listening immediately
+  startListening();
   
-  // Return unsubscribe function
+  // Return cleanup function
   return () => {
-    if (intervalId) {
-      clearInterval(intervalId);
+    if (unsubscribe) {
+      unsubscribe();
     }
-    document.removeEventListener('visibilitychange', handleVisibilityChange);
   };
 };
 
-// Get campaign progress (with smart polling for real-time updates)
+// Get campaign progress with real-time updates
 export const subscribeToCampaignProgress = (callback) => {
-  let intervalId;
-  let retryCount = 0;
-  const MAX_RETRIES = 3;
-  let isTabVisible = true;
-  let lastData = null;
+  let unsubscribe = null;
   
-  const fetchCampaignProgress = async () => {
-    // Don't fetch if tab is not visible (user switched tabs)
-    if (!isTabVisible) return;
-    
+  const startListening = () => {
     try {
-      const response = await apiService.getCampaignProgress();
-      // Ensure we have all required fields
-      const progressData = {
-        totalAmount: response.total_amount || 0,
-        totalDonations: response.total_donations || 0,
-        goal: response.goal || 10000,
-        progress: response.progress || 0
-      };
-      
-      // Only call callback if data actually changed
-      if (JSON.stringify(progressData) !== JSON.stringify(lastData)) {
-        callback(progressData);
-        lastData = progressData;
-      }
-      
-      retryCount = 0; // Reset retry count on success
-    } catch (error) {
-      console.error('Error fetching campaign progress:', error);
-      retryCount++;
-      
-      if (retryCount >= MAX_RETRIES) {
-        console.warn('Max retries reached for campaign progress. Stopping polling.');
-        callback({
-          totalAmount: 0,
-          totalDonations: 0,
-          goal: 10000,
-          progress: 0
-        });
-        return;
-      }
-      
-      callback({
-        totalAmount: 0,
-        totalDonations: 0,
-        goal: 10000,
-        progress: 0
+      // Use Firebase real-time listener for progress
+      unsubscribe = DonationService.onProgressChange((progress) => {
+        callback(progress);
       });
+      
+    } catch (error) {
+      console.error('❌ Error starting campaign progress listener:', error);
+      // Fallback to one-time fetch
+      fallbackFetch();
     }
   };
-
-  // Listen for tab visibility changes
-  const handleVisibilityChange = () => {
-    isTabVisible = !document.hidden;
-    if (isTabVisible) {
-      // Fetch immediately when tab becomes visible again
-      fetchCampaignProgress();
+  
+  const fallbackFetch = async () => {
+    try {
+      const progress = await DonationService.getCampaignProgress();
+      callback(progress);
+    } catch (error) {
+      console.error('❌ Fallback progress fetch failed:', error);
+      callback({ current: 0, goal: 200000, percentage: 0, remaining: 200000 });
     }
   };
-
-  document.addEventListener('visibilitychange', handleVisibilityChange);
-
-  // Initial fetch
-  fetchCampaignProgress();
   
-  // Set up polling only if we haven't exceeded max retries
-  if (retryCount < MAX_RETRIES) {
-    intervalId = setInterval(fetchCampaignProgress, POLLING_INTERVAL);
-  }
+  // Start listening immediately
+  startListening();
   
-  // Return unsubscribe function
+  // Return cleanup function
   return () => {
-    if (intervalId) {
-      clearInterval(intervalId);
+    if (unsubscribe) {
+      unsubscribe();
     }
-    document.removeEventListener('visibilitychange', handleVisibilityChange);
   };
+};
+
+// Get total donations amount (one-time fetch)
+export const getTotalAmount = async () => {
+  try {
+    const total = await DonationService.getTotalAmount();
+    return total;
+  } catch (error) {
+    console.error('❌ Error getting total amount:', error);
+    return 0;
+  }
+};
+
+// Get donations count (one-time fetch)
+export const getDonationsCount = async () => {
+  try {
+    const count = await DonationService.getDonationsCount();
+    return count;
+  } catch (error) {
+    console.error('❌ Error getting donations count:', error);
+    return 0;
+  }
+};
+
+// Get campaign progress (one-time fetch)
+export const getCampaignProgress = async () => {
+  try {
+    const progress = await DonationService.getCampaignProgress();
+    return progress;
+    } catch (error) {
+      console.error('❌ Error getting campaign progress:', error);
+      return { current: 0, goal: 10000, percentage: 0, remaining: 10000 };
+    }
 };
 
 // Get campaign settings
 export const getCampaignSettings = async () => {
   try {
-    const response = await apiService.getCampaignSettings();
-    return response;
+    const settings = await DonationService.getCampaignSettings();
+    return settings;
   } catch (error) {
-    console.error('Error getting campaign settings:', error);
-    // Return default settings on error
+    console.error('❌ Error getting campaign settings:', error);
     return {
-      goal: import.meta.env.VITE_DONATION_GOAL || 10000,
-      currency: import.meta.env.VITE_CURRENCY || 'ILS',
-      min_donation: import.meta.env.VITE_MIN_DONATION || 10,
+      goal: 10000,
+      currency: 'ILS',
+      min_donation: 10,
       title: 'קמפיין התרומות שלנו',
       description: 'עזרו לנו להגיע למטרה שלנו'
     };
   }
 };
 
-// Update campaign settings (admin only)
+// Update campaign settings (for admin use)
 export const updateCampaignSettings = async (settings) => {
   try {
-    const response = await apiService.updateCampaignSettings(settings);
-    return response;
+    const result = await DonationService.updateCampaignSettings(settings);
+    return result;
   } catch (error) {
-    console.error('Error updating campaign settings:', error);
+    console.error('❌ Error updating campaign settings:', error);
     throw error;
   }
 };
 
-// Get donation by transaction ID
-export const getDonationByTransactionId = async (transactionId) => {
-  try {
-    const response = await apiService.getDonationByTransactionId(transactionId);
-    return response.donation || null;
-  } catch (error) {
-    console.error('Error getting donation by transaction ID:', error);
-    throw error;
-  }
+// Legacy compatibility - keep these exports for backward compatibility
+export default {
+  addDonation,
+  subscribeToTopDonors,
+  subscribeToCampaignProgress,
+  getTotalAmount,
+  getDonationsCount,
+  getCampaignProgress,
+  getCampaignSettings,
+  updateCampaignSettings
 };

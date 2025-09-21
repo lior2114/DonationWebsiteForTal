@@ -4,7 +4,15 @@
   "version": "1.0.0",
   "type": "module",
   "description": "אתר תרומות מאובטח עם פס התקדמות בזמן אמת",
-  "keywords": ["donation", "react", "sql", "credit-card", "hebrew", "rtl", "flask"],
+  "keywords": [
+    "donation",
+    "react",
+    "sql",
+    "credit-card",
+    "hebrew",
+    "rtl",
+    "flask"
+  ],
   "author": "Donation Website Team",
   "scripts": {
     "dev": "vite",
@@ -14,6 +22,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^12.3.0",
     "lucide-react": "^0.542.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
