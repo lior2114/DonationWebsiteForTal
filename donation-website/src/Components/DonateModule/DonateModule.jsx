@@ -25,7 +25,7 @@ const DonateModule = ({ onDonate }) => {
         onClick={handleDonate}
         className={styles.donateButton}
       >
-        תרומה עכשיו
+        לחץ לתרומה
       </button>
     </div>
   );

@@ -18,9 +18,9 @@ const Hero = ({ title, subtitle, onDonateClick }) => {
         <button 
           className={styles.ctaButton}
           onClick={onDonateClick}
-          aria-label="תרומה עכשיו"
+          aria-label="תרום עכשיו"
         >
-          תרומה עכשיו
+          תרום עכשיו
         </button>
         
         <p className={styles.helpText}>
